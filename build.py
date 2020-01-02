@@ -8,9 +8,10 @@
 
 import zipfile
 import tempfile
-from ConfigParser import SafeConfigParser
-from ConfigParser import NoOptionError
+from configparser import SafeConfigParser
+from configparser import NoOptionError
 from collections import namedtuple
+import codecs
 import os
 import stat
 import sys
@@ -65,7 +66,7 @@ class Manifest(object):
         except NoOptionError:
             default_target = None
 
-        print modules
+        print(modules)
         #add modules
         files = []
         for module in modules:
@@ -127,13 +128,13 @@ def pack_egg(target_file, manifest):
     egg = zipfile.ZipFile(zip_path, "w")
 
     for file_path, egg_path in manifest.iterfiles():
-        print "adding %s as %s" % (file_path, egg_path)
+        print("adding %s as %s" % (file_path, egg_path))
         egg.write(file_path, egg_path)
 
     egg.close()
 
-    target = open(target_file, "w")
-    eggf = open(zip_path, "r")
+    target = codecs.open(target_file, "w", 'utf-8', 'ignore')
+    eggf = codecs.open(zip_path, "r", 'utf-8', 'ignore')
 
     target.write(HEADER % {
         "mainmodule" : manifest.mainmodule
